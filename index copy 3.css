@@ -1,6 +1,7 @@
 .main {
     display:flex;
-    --s: 20px;  /* size  */
+    --ss:20px; /*sq size*/
+    --s: 21.49139863647084px;  /* size  */
     --m: 1px;    /* margin */
     --f: calc(1.732 * var(--s) + 4 * var(--m)  - 1px);
     
@@ -40,8 +41,8 @@
 .square{
   /* width: calc(var(--s)*1.1547);
   height:calc(var(--s)*1.1547); */
-  width: var(--s);
-  height: var(--s);
+  width: var(--ss);
+  height: var(--ss);
   display: inline-block;
   font-size: initial;
   background-color: darkgray;

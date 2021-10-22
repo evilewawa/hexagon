@@ -1,12 +1,18 @@
 
 const container = document.getElementById("container");
 const cubeContainer = document.getElementById("cubeContainer")
-const width = 750
-const height = 750
-const hexWidth = 20;
+const width = container.clientWidth
+const height = container.clientHeight
+const area = 400;
+const sqSide = Math.sqrt(area)
+const hxSide = Math.sqrt((area*2)/(3*Math.sqrt(3)))
+const hexWidth = Math.cos(30*(Math.PI/180))*hxSide*2
+// const hexWidth = 20;
 const hexHeight = hexWidth*1.1547
-const numRows = parseInt(height/hexHeight)
-const numRowsSq = parseInt(height/(hexWidth+2))
+const numRows = parseInt(height/(2+(hxSide+(hxSide*Math.sin(30*(Math.PI/180))))))
+const numCols = parseInt(width/(hexWidth+2))
+const numRowsSq = parseInt(height/(sqSide+2))
+// const
 // function makeRows(rows, cols) {
 //   container.style.setProperty('--grid-rows', rows);
 //   container.style.setProperty('--grid-cols', cols);
@@ -60,9 +66,12 @@ function makeHexs(){
     let row = []
     let path = []
     if (i %2 == 0){
-      for (let c = 0; c < 34; c++){
+      for (let c = 0; c < numCols; c++){
         let cell = document.createElement("div")
+        // cell.style.width=hexWidth
+        // cell.style.height = hexHeight
         cell.classList.add("hex")
+        
         cell.setAttribute("id", c.toString() + "," + i.toString() + "HX")
         container.appendChild(cell)
         row.push([c,i])
@@ -70,9 +79,12 @@ function makeHexs(){
       }
     }
     else{
-      for (let c = 0; c < 33; c++){
+      for (let c = 0; c < numCols; c++){
         let cell = document.createElement("div")
+        // cell.style.width=hexWidth
+        // cell.style.height = hexHeight
         cell.classList.add("hex")
+        
         cell.setAttribute("id", c.toString() + "," + i.toString() + "HX")
         container.appendChild(cell)
         row.push([c,i])
@@ -81,6 +93,7 @@ function makeHexs(){
     }
     hxpath.push(path)
     grid.push(row)
+    
   }
   // for (c = 0; c < num; c++){
   //   let cell = document.createElement("div")
@@ -88,6 +101,7 @@ function makeHexs(){
   //   // cell.setAttribute("id", )
   //   container.appendChild(cell)
   // }
+  // document.getElementsByClassName('hex').style.height = hexHeight;
 }
 
 
@@ -108,10 +122,10 @@ class square{
 
 
 function makeSquares(){
-  for (let i = 0; i < 29; i++){
+  for (let i = 0; i < numRowsSq; i++){
     let row = []
     let path = []
-    for (let c = 0; c < 34; c++){
+    for (let c = 0; c < numRowsSq;c++){
       let cell = document.createElement("div")
       cell.classList.add("square")
       cell.setAttribute("id", c.toString() + "," + i.toString() + "SQ")
@@ -276,8 +290,8 @@ function djikstraHx(endSq){
     hxqueue.shift()
     hxdone.push(node)
     if (node[0] == endSq[0] && node[1] == endSq[1]){
-      // console.log("hello")
-      return hxpath[node[0]][node[1]]
+      // console.log("hello")?
+      return hxpath[node[1]][node[0]]
       // console.log(queue)
       // console.log(node)
     }
@@ -286,6 +300,7 @@ function djikstraHx(endSq){
     check_neighboursHX(node)
   }
 }
+
 
 function check_neighboursHX(hxnode){
   // console.log(hxnode)
@@ -297,74 +312,77 @@ function check_neighboursHX(hxnode){
   if (even){
     // console.log("even")
     //up left - need to check if can go up, and need to check that i can go left
+    
     if (hxnode[1]-1 >= 0 && hxnode[0]-1 >= 0 && !(checkIfIn(hxdone, [hxnode[0]-1, hxnode[1]-1]))){
       hxqueue.push([hxnode[0]-1, hxnode[1]-1])
-      hxpath[hxnode[0]-1][hxnode[1]-1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]-1][hxnode[0]-1].push([hxnode[0],hxnode[1]])
     }
     //up right - need to check if i can go up and need to check that i can go right
-    if (hxnode[1]-1 >= 0 && hxnode[0] < grid[1].length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]-1]))){
+    if (hxnode[1]-1 >= 0 && hxnode[0] < grid[0].length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]-1]))){
       hxqueue.push([hxnode[0], hxnode[1]-1])
-      hxpath[hxnode[0]][hxnode[1]-1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]-1][hxnode[0]].push([hxnode[0],hxnode[1]])
     }
     //bottom left
     if (hxnode[1]+1 < grid.length && hxnode[0]-1 >= 0 && !(checkIfIn(hxdone, [hxnode[0]-1, hxnode[1]+1]))){
       hxqueue.push([hxnode[0]-1, hxnode[1]+1])
-      hxpath[hxnode[0]-1][hxnode[1]+1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]+1][hxnode[0]-1].push([hxnode[0],hxnode[1]])
     }
     //bottom right
-    if (hxnode[1]+1 < grid.length && hxnode[0] < grid[1].length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]+1]))){
+    if (hxnode[1]+1 < grid.length && hxnode[0] < grid[0].length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]+1]))){
       hxqueue.push([hxnode[0], hxnode[1]+1])
-      hxpath[hxnode[0]][hxnode[1]+1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]+1][hxnode[0]].push([hxnode[0],hxnode[1]])
     }
     //rgith
 
     // BIG DOODOO needa fix 
     // the hxpath first thing asks for the row not the x values so you gotta switch the hxnode[0] and hxnode[1] around for all of  them lmao whoops
-    if (hxnode[0]+1 < grid.length && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]]))){
+    if (hxnode[0]+1 < grid[hxnode[1]].length && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]]))){
+      // console.log(hxnode)
       hxqueue.push([hxnode[0]+1, hxnode[1]])
       // console.log([hxnode[0]+1] +","+ [hxnode[1]])
       // console.log([hxnode[0]+1, hxnode[1]])
-      hxpath[hxnode[0]+1][hxnode[1]].push([hxnode[0],hxnode[1]])
+      
+      hxpath[hxnode[1]][hxnode[0]+1].push([hxnode[0],hxnode[1]])
     }
     //left
     
     if (hxnode[0]-1 >= 0 && !(checkIfIn(hxdone, [hxnode[0]-1, hxnode[1]]))){
       // console.log("left")
       hxqueue.push([hxnode[0]-1, hxnode[1]])
-      hxpath[hxnode[0]-1][hxnode[1]].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]][hxnode[0]-1].push([hxnode[0],hxnode[1]])
     }
   }
   else{
     //up left - need to check if can go up, and need to check that i can go left
     if (hxnode[1]-1 >= 0 && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]-1]))){
       hxqueue.push([hxnode[0], hxnode[1]-1])
-      hxpath[hxnode[0]][hxnode[1]-1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]-1][hxnode[0]].push([hxnode[0],hxnode[1]])
     }
     //up right - need to check if i can go up and need to check that i can go right
-    if (hxnode[1]-1 >= 0  && hxnode[0] +1 <grid.length -1 && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]-1]))){
+    if (hxnode[1]-1 >= 0  && hxnode[0] +1 <grid.length[hxnode[1]]  && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]-1]))){
       hxqueue.push([hxnode[0]+1, hxnode[1]-1])
-      hxpath[hxnode[0]+1][hxnode[1]-1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]-1][hxnode[0]+1].push([hxnode[0],hxnode[1]])
     }
     //bottom left
-    if (hxnode[1]+1 < grid[0].length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]+1]))){
+    if (hxnode[1]+1 < grid.length && !(checkIfIn(hxdone, [hxnode[0], hxnode[1]+1]))){
       hxqueue.push([hxnode[0], hxnode[1]+1])
-      hxpath[hxnode[0]][hxnode[1]+1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]+1][hxnode[0]].push([hxnode[0],hxnode[1]])
     }
     //bottom right
-    if (hxnode[1]+1 < grid[0].length && hxnode[0] +1 <grid.length-1 && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]+1]))){
+    if (hxnode[1]+1 < grid.length && hxnode[0] +1 <grid[hxnode[1]].length && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]+1]))){
       hxqueue.push([hxnode[0]+1, hxnode[1]+1])
-      hxpath[hxnode[0]+1][hxnode[1]+1].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]+1][hxnode[0]+1].push([hxnode[0],hxnode[1]])
       
     }
     //right
-    if (hxnode[0]+1 < grid.length -1 && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]]))){
+    if (hxnode[0]+1 < grid[hxnode[1]].length  && !(checkIfIn(hxdone, [hxnode[0]+1, hxnode[1]]))){
       hxqueue.push([hxnode[0]+1, hxnode[1]])
-      hxpath[hxnode[0]+1][hxnode[1]].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]][hxnode[0]+1].push([hxnode[0],hxnode[1]])
     }
     //left
     if (hxnode[0]-1 >= 0 && !(checkIfIn(hxdone, [hxnode[0]-1, hxnode[1]]))){
       hxqueue.push([hxnode[0]-1, hxnode[1]])
-      hxpath[hxnode[0]-1][hxnode[1]].push([hxnode[0],hxnode[1]])
+      hxpath[hxnode[1]][hxnode[0]-1].push([hxnode[0],hxnode[1]])
     }
   
   }
@@ -439,17 +457,21 @@ makeSquares()
 var queue;
 var sqdone;
 
-var hxqueue;
-var hxdone
+var hxqueue = [];
+var hxdone = []
 
-function squares(){
+function squares(nodes){
+  // console.log(nodes)
+  let node = nodes[0]
+  let endnode = nodes[1]
   d= new Date()
   t = d.getTime()
-  let node = [1,1]
+  // node = [1,1]
   queue = [node]
   sqdone = []
+  // console.log(endnode)
   sqPath[node[0]][node[1]] = node
-  let path = djikstraSq([28,33])
+  let path = djikstraSq(endnode)
   for (let i = 0; i < sqdone.length; i++){
     let id = sqdone[i][1].toString() + "," + sqdone[i][0].toString() + "SQ"
     let element = document.getElementById(id)
@@ -467,19 +489,25 @@ function squares(){
     curPath = newNode[0]
   }
   d = new Date()
-  console.log(d.getTime() - t)
-  console.log("sq time ^")
+  // console.log(d.getTime() - t)
+  let time = d.getTime()-t
+  // console.log("sq time ^")
+  STimes.push(time)
 }
+var STimes = []
+
 
 function getSqsByDistance(distance){
   let counter = 0;
   let possibles;
+  let index;
   do{
     counter++;
   let randomX = parseInt(Math.random()*sqgrid[0].length)
   let randomY = parseInt(Math.random()*sqgrid.length)
-  let index = [randomX,randomY]
+  index = [randomX,randomY]
   let id = idMaker(index, "SQ")
+  // let id = randomY.toString
   let element = document.getElementById(id)
   let startrect = element.getBoundingClientRect()
   element.style.backgroundColor = "purple"
@@ -510,23 +538,77 @@ function getSqsByDistance(distance){
   let endIndex = possibles[parseInt(Math.random()*possibles.length)]
   let endElement = document.getElementById(idMaker(endIndex, "SQ"))
   endElement.style.backgroundColor = "orange"
-  console.log(possibles)
-  return endIndex
+  // console.log(possibles)
+  endIndex = [endIndex[1], endIndex[0]]
+  index = [index[1], index[0]]
+  return [index, endIndex]
   
+}
+function getHxsByDistance(distance){
+  let counter = 0;
+  let possibles;
+  let index;
+  do{
+    counter++
+    let randomY = parseInt(Math.random()*grid.length)
+    let randomX = parseInt(Math.random()*grid[randomY].length)
+    index = [randomX, randomY]
+    let id = idMaker(index,"HX")
+    let element = document.getElementById(id)
+    element.style.backgroundColor = "purple"
+    let startrect = element.getBoundingClientRect()
+    let startX = startrect.x
+    let startY = startrect.y
+    possibles = []
+    for (let i = 0; i < grid.length; i++){
+      for (let c = 0; c < grid[i].length; c++){
+        let Sindex = grid[i][c]
+        // console.log(c,i, Sindex)
+        let Sid = idMaker(Sindex, "HX")
+        let Selement = document.getElementById(Sid)
+        let endRect = Selement.getBoundingClientRect()
+        let endX = endRect.x
+        let endY = endRect.y
+        // console.log(endX)
+        let Dbetween = Math.sqrt((endX - startX)**2 + (endY - startY)**2)
+        // console.log(Dbetween.toString() + "Dbetween")
+        // console.log(distance)
+        if (((distance - hexWidth) <= Dbetween) && (Dbetween  <= (distance + hexWidth)))  {
+          possibles.push(Sindex)
+        }
+      }
+    }
+    if (counter > 100){
+      return NaN
+    }
+  }while(possibles.length <=0)
+  let endIndex = possibles[parseInt(Math.random()*possibles.length)]
+  let endElement = document.getElementById(idMaker(endIndex, "HX"))
+  endElement.style.backgroundColor = "orange"
+  // console.log(possibles)
+  // endIndex = [endIndex[1], endIndex[0]]
+  // index = [index[1], index[0]]
+  return [index,endIndex]
 }
 
 
-function hexagons(){
+
+function hexagons(nodes){
+  let node = nodes[0]
+  // document.getElementById(node[1].toString() + "," + hxdone[i][0].toString() + "HX")
+  let endnode = nodes[1]
   d= new Date()
   t = d.getTime()
-  node = [31,32]
+  // node = [31,32]
   hxqueue = [node]
   hxdone = []
-  hxpath[node[0]][node[1]] = node
-  let endnode= [0,0]
+  hxpath[node[1]][node[0]] = node
+  // let endnode= [0,0]
   let path = djikstraHx(endnode)
+  // console.log(path)
   for (let i = 0; i < hxdone.length; i++){
-    let id = hxdone[i][1].toString() + "," + hxdone[i][0].toString() + "HX"
+    let id = hxdone[i][0].toString() + "," + hxdone[i][1].toString() + "HX"
+    // console.log(id)
     let element = document.getElementById(id)
     element.style.backgroundColor = "green"
   }
@@ -538,16 +620,18 @@ function hexagons(){
     let element = document.getElementById(id)
     element.style.backgroundColor = "yellow"
     // console.log(curPath)
-    let newNode = hxpath[curPath[0]][curPath[1]]
+    let newNode = hxpath[curPath[1]][curPath[0]]
     // console.log(newNode[0])
     curPath = newNode[0]
   }
     
   d = new Date()
   time = d.getTime() - t
-  console.log(time)
-  console.log("hx time ^")
+  // console.log(time)
+  // console.log("hx time ^")
+  HTimes.push(time)
 }
+var HTimes = []
 
 
 // console.log(path)
@@ -559,3 +643,62 @@ function hexagons(){
 // 4. more pathfinding algoritms
 // 5. barriers
 
+
+function main(){
+  let distances = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
+  let avgTimesH = []
+  let avgTimesS = []
+  for (let i = 0; i < distances.length; i++){
+    let distance = distances[i]
+    pathFindDjikstra(distance)
+    avgTimesH.push(getAvg(HTimes))
+    avgTimesS.push(getAvg(STimes))
+  }
+  document.getElementById("HTimes").innerText = "Hexagon Average Timings = " + avgTimesH.toString()
+  console.log("hx time: " + getSum(HTimes))
+  console.log("sq time: " + getSum(STimes))
+  document.getElementById("STimes").innerText = "Square Average Timings =  " + avgTimesS.toString()
+}
+function pathFindDjikstra(distance){
+  STimes = []
+  HTimes = []
+  let problem = 0;
+  for (let i =0; i < 50; i++){
+    try{
+      hexagons(getHxsByDistance(distance))
+      squares(getSqsByDistance(distance))
+    }
+    catch (err){
+      // console.log(err)
+      // console.log(distance)
+      problem++
+    }
+    finally{
+    clearEverything()
+    }
+  }
+  // console.log(problem)
+}
+
+function getAvg(arr){
+  let sum = 0;
+  for (let i = 0; i < arr.length; i++){
+    sum+=arr[i]
+  }
+  return parseInt((sum/arr.length)+0.5)
+}
+// main()
+function getSum(arr){
+  let sum = 0;
+  for (let i = 0; i < arr.length;i++){
+    sum+=arr[i]
+  }
+  return sum
+}
+// hexagons(getHxsByDistance(500))
+// squares(getSqsByDistance(500))
+// clearEverything()
+
+function getHTMLElement(index, type){
+  return document.getElementById(idMaker(index,type))
+}
