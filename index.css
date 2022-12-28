@@ -23,15 +23,19 @@ svg{
     /* background-color: blue; */
     position: fixed;
 }
-.hex{
+.land{
     fill: lightgreen;
     
 }
-.hex:nth-of-type(odd){
-    fill:green;
+.land:nth-of-type(odd){
+    filter:brightness(90%);
+}
+.water{
+    fill: aqua;
 }
 .hex:hover{
-    fill:aqua;
+    /* fill:white; */
+    filter: brightness(85%);
     transition: 0.75s;
 }
 .player{
@@ -50,4 +54,16 @@ svg{
 #player_test:hover{
     background-color: purple;
     transition: 0.5s;
+}
+.desert{
+    fill: sandybrown;
+}
+.jungle{
+    fill: forestgreen;
+}
+.tundra{
+    fill:dodgerblue;
+}
+.walid{
+    fill:black;
 }
