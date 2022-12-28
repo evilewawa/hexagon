@@ -8,6 +8,7 @@ body{
     left: 0%;
     height: 100%;
     width: 100%;
+    background-color: aqua;
 }
 /* polygon:hover{
     fill: rgb(22, 145, 194);
@@ -23,11 +24,11 @@ svg{
     position: fixed;
 }
 .hex{
-    fill: lightslategray;
+    fill: lightgreen;
     
 }
 .hex:nth-of-type(odd){
-    fill:lightblue;
+    fill:green;
 }
 .hex:hover{
     fill:aqua;
@@ -36,6 +37,7 @@ svg{
 .player{
     fill:blue
 }
+
 .destination{
     fill:black;
 }
