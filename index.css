@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 body{
     overflow: hidden;
 }
@@ -18,10 +19,12 @@ polygon{
     
     stroke: black;
     stroke-width: 1px;
+    
 }
 svg{
     /* background-color: blue; */
     position: fixed;
+    
 }
 .land{
     fill: lightgreen;
@@ -42,9 +45,7 @@ svg{
     fill:blue
 }
 
-.destination{
-    fill:black;
-}
+
 #player_test{
     width:50px;
     height: 50px;
@@ -66,4 +67,25 @@ svg{
 }
 .walid{
     fill:black;
+}
+.destination{
+    fill:black;
+}
+.test_hidden{
+    /* display:none; */
+    position: fixed;
+    border-radius: 50px;
+    padding: 5%;
+    left:50px;
+    /* width: 500px; */
+    top:50px;
+    /* height: 500px; */
+    background-color: greenyellow;
+    font-size: 50px;
+    font-family: 'Press Start 2P', cursive;
+    transition: 2s;
+}
+/* temporary cuz i should make a different sign image for the hex */
+.sign{
+    fill: yellow;
 }
