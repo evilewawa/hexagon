@@ -6,6 +6,8 @@ class Tile{
         this.col = col
         this.classes = []
         this.heat = null
+        this.sign_element = false
+        this.sign_content = false
     }
     update(){
         let c = this.element.classList
@@ -136,7 +138,14 @@ function getHexCoords(i ,j, offset){
             [0 + width, side_length*Math.cos(Math.PI/3) + side_length],
             [0+  width,side_length*Math.cos(Math.PI/3)]] 
     }
+
     hex_coords = changeHexCoords(i,j, hex_coords)
+    for (let i = 0; i < hex_coords.length ; i++){
+        let coord = hex_coords[i]
+        coord[0] = parseInt(coord[0])
+        coord[1] = parseInt(coord[1])
+        hex_coords[i] = coord
+    }
     return hex_coords
 }
 function changeHexCoords(i,j,hex_coords){
@@ -273,24 +282,74 @@ function movePlayer(hex){
     }
     return movement
 }
+let half = 0
+let signs = []
+let sign_visible = false
+let onSign = false
+let count = 0
+let interv = NaN
 setInterval(function(){
     // i think its possible to only call this interval at certain times
     // creates an interval that moves the player to the hexagon
-    if (moveTo){
-        if (!checkIfPlayerInHexagon(moveTo)){
-            // find the vector that the player should move and moves it
-            let movementVector = movePlayer(moveTo)
-            offset[0] -= movementVector[0]
-            offset[1] -= movementVector[1]
-            moveSvg(offset[0], offset[1])
+    if (half%2== 0){
+        if (moveTo){
+            if (!checkIfPlayerInHexagon(moveTo)){
+                // find the vector that the player should move and moves it
+                let movementVector = movePlayer(moveTo)
+                offset[0] -= movementVector[0]
+                offset[1] -= movementVector[1]
+                moveSvg(offset[0], offset[1])
+            }
+            else{
+                moveTo.classList.remove("destination")
+                moveTo = false
+                // for the sign div content stuff
+                let sign = checkIfPlayerOnSign(signs)
+                if (sign){
+                    onSign = sign
+                    sign_visible = true
+                    sign.sign_element.style.display = ""
+                    // sign.sign_element.innerText= sign.sign_content
+                    interv = setInterval(div_animation, 50, sign.sign_element, sign.sign_content)
+                }
+            }
+            if (sign_visible){
+                if (!checkIfPlayerInHexagon(onSign.element)){
+                    sign_visible = false
+                    onSign.sign_element.style.display = "none"
+                    onSign.sign_element.innerText = ""
+                    onSign = false
+                    clearInterval(interv)
+                    count = 0
+                }
+            }
         }
-        else{
-            moveTo.classList.remove("destination")
-            moveTo = false
+
+
+    }
+    half+=1
+}, 17)
+function div_animation(elem, total_text){
+    if (count == total_text.length+1){
+        clearInterval(interv)
+        count = 0
+        console.log("walid")
+    }
+    else{
+        elem.innerText = total_text.substring(0, count)
+        count++
+    }
+}
+function checkIfPlayerOnSign(signs){
+    for (let i = 0; i < signs.length; i++){
+        let sign = signs[i]
+        if (checkIfPlayerInHexagon(sign.element)){
+            // console.log(sign.row, sign.col)
+            return sign
         }
     }
-}, 50)
-
+    return false
+}
 // next steps
 // biome generation
 function changeHexAroundCentral(grid, central, radius,coords, heat){
@@ -389,6 +448,7 @@ function generateBiomes(grid){
     }
 }
 // resume content addition
+
 // player shape change
 // player animation?
 // proper pathfinding algo <
@@ -443,4 +503,32 @@ function elemIsIn(arr, elem){
 }
 
 generateBiomes(grid)
-console.log("walid")
+
+//creating method for divs
+let resume_content_divs_ids = {
+    "walid":"walid is a cutie pie",
+    "sharusan": "sharusan is a cutie pie",
+    "ahmy":"ahmy is a cutie pie", 
+    "ayaan":"Ion albert inside F", 
+    "umer":"umer has an absolutely massive dumptruck"}
+//temporary 
+let resume_div_location = {
+    "walid": [10, 10],
+    "sharusan": [20, 10],
+    "ahmy" : [30, 10],
+    "ayaan":[30, 30],
+    "umer":[20, 20]
+}
+
+function assignSigns(){
+    for (let [key, value] of Object.entries(resume_content_divs_ids)){
+        let loc = resume_div_location[key]
+        grid[loc[0]][loc[1]].sign_element = document.getElementById(key)
+        document.getElementById(key).style.display = "none"
+        grid[loc[0]][loc[1]].sign_content = value
+        grid[loc[0]][loc[1]].element.classList.add("sign")
+        grid[loc[0]][loc[1]].update()
+        signs.push(grid[loc[0]][loc[1]])
+    }
+}
+assignSigns()
