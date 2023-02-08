@@ -510,7 +510,8 @@ let resume_content_divs_ids = {
     "sharusan": "sharusan is a cutie pie",
     "ahmy":"ahmy is a cutie pie", 
     "ayaan":"Ion albert inside F", 
-    "umer":"umer has an absolutely massive dumptruck"}
+    //"umer":"umer has an absolutely massive dumptruck"}
+    "umer":"umer is also a cutie"}
 //temporary 
 let resume_div_location = {
     "walid": [10, 10],
